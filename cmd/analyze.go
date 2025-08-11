@@ -6,6 +6,7 @@ import (
 
 	"github.com/frfahim/gitstory/internal/analyzer"
 	"github.com/frfahim/gitstory/internal/git"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/spf13/cobra"
 )
 
@@ -14,6 +15,7 @@ var analyzeCmd = &cobra.Command{
 	Short: "Analyze the current Git repository",
 	Long:  `Perform a detailed analysis of the Git repository, including commit statistics and author contributions.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		var commits []*object.Commit
 		currentDir, _ := os.Getwd()
 		repo, err := git.OpenRepository(currentDir)
 		if err != nil {
@@ -21,10 +23,17 @@ var analyzeCmd = &cobra.Command{
 			return
 		}
 		num, _ := cmd.Flags().GetInt("number")
+		unique, _ := cmd.Flags().GetBool("unique")
+		base, _ := cmd.Flags().GetString("base")
 		if num < 1 {
 			num = 5
 		}
-		summaries, err := repo.ListCommitSummaries(num)
+		if unique {
+			commits, _ = repo.ListUniqueCommits(base, num)
+		} else {
+			commits, _ = repo.ListCommits(num)
+		}
+		summaries, err := repo.ListCommitSummaries(commits)
 		if err != nil {
 			fmt.Printf("❌ Error listing commit summaries: %v\n", err)
 			return
@@ -39,4 +48,6 @@ var analyzeCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(analyzeCmd)
 	analyzeCmd.Flags().IntP("number", "n", 5, "Number of commits to analyze")
+	analyzeCmd.Flags().Bool("unique", false, "Show only commits unique to this branch (compared to main)")
+	analyzeCmd.Flags().String("base", "main", "Base branch name for unique commit comparison")
 }
