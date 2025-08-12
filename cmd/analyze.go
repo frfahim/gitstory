@@ -28,11 +28,32 @@ var analyzeCmd = &cobra.Command{
 		if num < 1 {
 			num = 5
 		}
-		if unique {
-			commits, _ = repo.ListUniqueCommits(base, num)
-		} else {
-			commits, _ = repo.ListCommits(num)
+		// If unique mode, try to auto-detect base if not explicitly set
+		if unique && (base == "" || base == "auto") {
+			autoBase, err := repo.DetectDefaultBranch()
+			if err != nil {
+				fmt.Printf("⚠️  Could not auto-detect default branch: %v\n", err)
+				return
+			}
+			base = autoBase
 		}
+
+		if unique {
+			commits, err = repo.ListUniqueCommits(base, num)
+			if err != nil {
+				fmt.Printf("❌ Error listing unique commits (base=%s): %v\n", base, err)
+				return
+			}
+			fmt.Printf("🔎 Showing last %d commits unique to branch '%s' (vs base '%s'):\n\n", len(commits), repo.CurrentBranchName(), base)
+		} else {
+			commits, err = repo.ListCommits(num)
+			if err != nil {
+				fmt.Printf("❌ Error listing commits: %v\n", err)
+				return
+			}
+			fmt.Printf("🔎 Showing last %d commits on branch '%s':\n\n", len(commits), repo.CurrentBranchName())
+		}
+
 		summaries, err := repo.ListCommitSummaries(commits)
 		if err != nil {
 			fmt.Printf("❌ Error listing commit summaries: %v\n", err)

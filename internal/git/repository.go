@@ -24,3 +24,11 @@ func IsGitRepository(path string) bool {
 	_, err := git.PlainOpen(path)
 	return err == nil
 }
+
+func (r *Repository) CurrentBranchName() string {
+	head, err := r.repo.Head()
+	if err != nil {
+		return "(unknown)"
+	}
+	return head.Name().Short()
+}

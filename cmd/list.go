@@ -29,15 +29,33 @@ var listCmd = &cobra.Command{
 		if num < 1 {
 			num = 5
 		}
+
+		// If unique mode, try to auto-detect base if not explicitly set
+		if unique && (base == "" || base == "auto") {
+			autoBase, err := repo.DetectDefaultBranch()
+			if err != nil {
+				fmt.Printf("⚠️  Could not auto-detect default branch: %v\n", err)
+				return
+			}
+			base = autoBase
+		}
+
 		if unique {
 			commits, err = repo.ListUniqueCommits(base, num)
+			if err != nil {
+				fmt.Printf("❌ Error listing unique commits (base=%s): %v\n", base, err)
+				return
+			}
+			fmt.Printf("🔎 Showing last %d commits unique to branch '%s' (vs base '%s'):\n\n", len(commits), repo.CurrentBranchName(), base)
 		} else {
 			commits, err = repo.ListCommits(num)
+			if err != nil {
+				fmt.Printf("❌ Error listing commits: %v\n", err)
+				return
+			}
+			fmt.Printf("🔎 Showing last %d commits on branch '%s':\n\n", len(commits), repo.CurrentBranchName())
 		}
-		if err != nil {
-			fmt.Printf("❌ Error listing commits: %v\n", err)
-			return
-		}
+
 		fmt.Printf("Showing last %d commits:\n\n", len(commits))
 		for _, c := range commits {
 			fmt.Printf("• %s | %s | %s\n  %s\n\n",
@@ -53,5 +71,5 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 	listCmd.Flags().IntP("number", "n", 5, "Number of commits to show")
 	listCmd.Flags().Bool("unique", false, "Show only commits unique to this branch (compared to main)")
-	listCmd.Flags().String("base", "main", "Base branch name for unique commit comparison")
+	listCmd.Flags().String("base", "main", "Base branch name for unique commit comparison (default: auto-detect main/master)")
 }
