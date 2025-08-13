@@ -18,6 +18,10 @@ func NewClient(config ClientConfig) (Client, error) {
 			config.Provider, getEnvKeyName(config.Provider))
 	}
 
+	if config.Model == "" {
+		config.Model = getDefaultModel(config.Provider)
+	}
+
 	// Create provider-specific client
 	switch config.Provider {
 	case OpenAI:
@@ -79,6 +83,15 @@ func getEnvKeyName(provider Provider) string {
 		Gemini: "GEMINI_API_KEY",
 	}
 	return envKeys[provider]
+}
+
+func getDefaultModel(provider Provider) string {
+	defaultModels := map[Provider]string{
+		OpenAI: "gpt-4o",
+		Claude: "claude-3",
+		Gemini: "gemini-2.5-flash-lite",
+	}
+	return defaultModels[provider]
 }
 
 // GetSupportedProviders returns list of all supported LLM providers

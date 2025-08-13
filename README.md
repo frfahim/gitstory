@@ -1,4 +1,4 @@
-# GitStory �
+# GitStory 
 
 **Transform your Git commits into compelling stories with AI.**
 
@@ -15,7 +15,7 @@ As developers, we often struggle to:
 
 GitStory solves this by analyzing your Git commits and generating platform-specific summaries using AI.
 
-## ✨ Current Features
+## ✨ Features
 
 ### 🤖 AI-Powered Summarization
 - **Multiple AI Providers**: OpenAI, Google Gemini (Claude and more coming soon)
@@ -62,6 +62,8 @@ export OPENAI_API_KEY="your-openai-key"
 export GEMINI_API_KEY="your-gemini-key"
 ```
 
+## 💡 Examples
+
 ### Basic Usage
 
 ```bash
@@ -77,8 +79,6 @@ gitstory summarize --platform technical --include-diff
 # Blog post with context
 gitstory summarize --platform blog --context "Sprint 23: User Authentication Overhaul"
 ```
-
-## 💡 Real-World Examples
 
 ### 📱 Social Media Post
 ```bash
@@ -167,8 +167,8 @@ gitstory summarize --platform blog
 gitstory summarize --provider gemini --platform twitter
 
 # Set custom model
-export OPENAI_MODEL="gpt-4o"
-export GEMINI_MODEL="gemini-1.5-pro"
+export OPENAI_MODEL="gpt-5"
+export GEMINI_MODEL="gemini-2.5-pro"
 ```
 
 ## 🎯 Use Cases
@@ -192,8 +192,6 @@ export GEMINI_MODEL="gemini-1.5-pro"
 - **Case Studies**: Extract insights from project development
 
 
-```
-
 ## 🛠 Current Status
 
 ### ✅ Implemented Features
@@ -205,13 +203,13 @@ export GEMINI_MODEL="gemini-1.5-pro"
 - ✅ Multiple output formats (JSON, Markdown, plain text)
 - ✅ Comprehensive test suite
 
-### 🚧 Feature Plan
-- 🔄 **Claude AI Integration**: Anthropic's Claude for even better summaries
-- 🔄 **Interactive TUI**: Beautiful terminal interface with Bubble Tea
-- 🔄 **Export System**: Direct export to Hugo, Jekyll, Obsidian
-- 🔄 **Diff Analysis**: Include actual code changes in summaries
-- 🔄 **Configuration Management**: Persistent settings and API key management
-- 🔄 **Template System**: Custom prompt templates for different use cases
+### 🚧 Future Plan
+- [ ] **Claude AI Integration**: Anthropic's Claude and more
+- [ ] **Interactive TUI**: Beautiful terminal interface with Bubble Tea
+- [ ] **Export System**: Direct export to Hugo, Jekyll, Obsidian
+- [ ] **Diff Analysis**: Include actual code changes in summaries
+- [ ] **Configuration Management**: Persistent settings and API key management
+- [ ] **Template System**: Custom prompt templates for different use cases
 
 
 ## 🏗 Technical Architecture
