@@ -38,7 +38,7 @@ func NewOpenAIClient(config ClientConfig) (Client, error) {
 	)
 
 	return &OpenAIClient{
-		client: client,
+		client: &client,
 		config: config,
 	}, nil
 }

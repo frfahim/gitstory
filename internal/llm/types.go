@@ -26,6 +26,24 @@ const (
 	Technical Platform = "technical" // Technical documentation
 )
 
+// NormalizePlatform converts platform aliases to canonical names
+func NormalizePlatform(platform string) Platform {
+	switch strings.ToLower(platform) {
+	case "x", "twitter":
+		return Twitter
+	case "linkedin":
+		return LinkedIn
+	case "blog":
+		return Blog
+	case "note", "notes":
+		return Note
+	case "technical", "tech":
+		return Technical
+	default:
+		return Note // default fallback
+	}
+}
+
 // Client interface that all AI providers must implement
 type Client interface {
 	// Summarize generates a summary based on the request

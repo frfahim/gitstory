@@ -114,12 +114,16 @@ func ValidateProvider(provider string) error {
 	return fmt.Errorf("unsupported provider '%s'. Supported: %v", provider, GetSupportedProviders())
 }
 
-// ValidatePlatform checks if a platform string is valid
+// ValidatePlatform checks if a platform string is valid (including aliases)
 func ValidatePlatform(platform string) error {
+	// Use normalization to check if it's valid
+	normalized := NormalizePlatform(platform)
+
+	// Check if the normalized platform is in our supported list
 	for _, p := range GetSupportedPlatforms() {
-		if string(p) == platform {
+		if p == normalized {
 			return nil
 		}
 	}
-	return fmt.Errorf("unsupported platform '%s'. Supported: %v", platform, GetSupportedPlatforms())
+	return fmt.Errorf("unsupported platform '%s'. Supported: twitter/X, linkedin, blog, technical, notes", platform)
 }

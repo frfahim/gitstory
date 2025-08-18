@@ -15,7 +15,7 @@ func getSystemPrompt(platform Platform) string {
 - Using clear, accessible language while maintaining technical accuracy
 - Structuring content for easy scanning and comprehension`,
 
-		Twitter: `You are a tech influencer who creates viral developer content on Twitter. You excel at:
+		Twitter: `You are a tech influencer who creates viral developer content on Twitter/X. You excel at:
 - Condensing complex technical work into compelling 280-character stories
 - Using relevant hashtags and emojis strategically
 - Creating content that gets developers to engage and share
@@ -72,7 +72,7 @@ Create a blog post summary with this structure:
 Use markdown formatting. Aim for 300-500 words. Make it engaging but informative.`,
 
 		Twitter: `
-Create a Twitter thread or single post:
+Create a Twitter/X thread or single post:
 - Start with a hook that grabs attention
 - Maximum 280 characters if single post, or 2-3 connected tweets
 - Include 2-3 relevant hashtags (#coding #webdev #javascript etc.)
