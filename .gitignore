@@ -41,6 +41,9 @@ Thumbs.db
 coverage.html
 .gitstory/
 
+# Exclude md files
+.github/*.md
+
 # Log files
 *.log
 

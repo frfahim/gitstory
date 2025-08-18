@@ -76,6 +76,9 @@ gitstory summarize --platform linkedin --commits 10
 # Technical documentation
 gitstory summarize --platform technical --include-diff
 
+# Store summary to file
+gitstory summarize --platform blog --output blog_summary.md
+
 # Blog post with context
 gitstory summarize --platform blog --context "Sprint 23: User Authentication Overhaul"
 ```
