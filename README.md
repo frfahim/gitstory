@@ -283,10 +283,6 @@ make lint
 # Run all tests
 make test
 
-# Run specific package tests
-make test-git
-make test-llm
-
 # Test with real API (set keys first)
 export OPENAI_API_KEY="your-key"
 export GEMINI_API_KEY="your-key"  

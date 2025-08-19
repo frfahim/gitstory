@@ -10,13 +10,6 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/storer"
 )
 
-type CommitSummary struct {
-	Hash    string
-	Author  string
-	Date    string
-	Message string
-}
-
 // ListCommits returns the latest N commits from the repository
 func (r *Repository) ListCommits(n int) ([]*object.Commit, error) {
 	ref, err := r.repo.Head()
@@ -44,13 +37,17 @@ func (r *Repository) ListCommits(n int) ([]*object.Commit, error) {
 // ListCommitSummaries returns summary info for last N commits
 func (repo *Repository) ListCommitSummaries(commits []*object.Commit) ([]CommitSummary, error) {
 	var summaries []CommitSummary
-	for _, c := range commits {
-		summaries = append(summaries, CommitSummary{
-			Hash:    c.Hash.String()[:7],
-			Author:  c.Author.Name,
-			Date:    c.Author.When.Format(time.RFC3339),
-			Message: c.Message,
-		})
+	for _, commit := range commits {
+		commitSummary := CommitSummary{
+			Hash:    commit.Hash.String()[:7],
+			Author:  commit.Author.Name,
+			Date:    commit.Author.When.Format(time.RFC3339),
+			Message: commit.Message,
+		}
+		details, _ := repo.GetCommitDiffDetails(commit, true)
+		commitSummary.Files = details.Files
+		commitSummary.Stats = details.Stats
+		summaries = append(summaries, commitSummary)
 	}
 	return summaries, nil
 }
