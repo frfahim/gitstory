@@ -23,8 +23,10 @@ type FileChange struct {
 }
 
 type CommitStats struct {
-	TotalFiles int
-	TotalLines int
-	Additions  int
-	Deletions  int
+	TotalFiles  int
+	TotalLines  int
+	Additions   int
+	Deletions   int
+	Languages   []string // Languages affected by the commit
+	PrimaryLang string   // Main language of the commit
 }

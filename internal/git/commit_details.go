@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -19,6 +20,7 @@ func (r *Repository) GetCommitDiffDetails(commit *object.Commit, includeDiff boo
 func (r *Repository) extractFileChanges(commit *object.Commit, includeDiff bool) ([]FileChange, CommitStats, error) {
 	var files []FileChange
 	var stats CommitStats
+	languageCount := make(map[string]int)
 
 	// Get the current commit tree object
 	currentTree, err := commit.Tree()
@@ -50,6 +52,20 @@ func (r *Repository) extractFileChanges(commit *object.Commit, includeDiff bool)
 		stats.TotalLines += fileChange.Additions + fileChange.Deletions
 		stats.Additions += fileChange.Additions
 		stats.Deletions += fileChange.Deletions
+		lang := r.detectLanguage(fileChange.Path)
+		if lang != "" {
+			languageCount[lang]++
+		}
+	}
+
+	// Find the primary language and add all used languages
+	maxLangCount := 0
+	for lang, count := range languageCount {
+		stats.Languages = append(stats.Languages, lang)
+		if count > maxLangCount {
+			maxLangCount = count
+			stats.PrimaryLang = lang
+		}
 	}
 	return files, stats, nil
 }
@@ -129,4 +145,56 @@ func (r *Repository) getParentCommit(commit *object.Commit) (*object.Commit, err
 		return nil, fmt.Errorf("failed to get parent commit (%s): %w", commit.Hash, err)
 	}
 	return parentCommit, nil
+}
+
+func (r *Repository) detectLanguage(filePath string) string {
+	// Use the file extension to determine the programming language
+	ext := strings.ToLower(filepath.Ext(filePath))
+
+	// Map file extensions to programming languages
+	languageMap := map[string]string{
+		".go":         "Go",
+		".js":         "JavaScript",
+		".ts":         "TypeScript",
+		".py":         "Python",
+		".java":       "Java",
+		".c":          "C",
+		".cpp":        "C++",
+		".rs":         "Rust",
+		".php":        "PHP",
+		".rb":         "Ruby",
+		".swift":      "Swift",
+		".kt":         "Kotlin",
+		".dart":       "Dart",
+		".cs":         "C#",
+		".scala":      "Scala",
+		".clj":        "Clojure",
+		".html":       "HTML",
+		".css":        "CSS",
+		".scss":       "SCSS",
+		".sass":       "Sass",
+		".sql":        "SQL",
+		".sh":         "Shell",
+		".yaml":       "YAML",
+		".yml":        "YAML",
+		".json":       "JSON",
+		".xml":        "XML",
+		".md":         "Markdown",
+		".dockerfile": "Docker",
+	}
+
+	if lang, exists := languageMap[ext]; exists {
+		return lang
+	}
+
+	// Check for specific filenames
+	filename := strings.ToLower(filepath.Base(filePath))
+	if filename == "dockerfile" {
+		return "Docker"
+	}
+	if filename == "makefile" {
+		return "Make"
+	}
+
+	return ""
 }
