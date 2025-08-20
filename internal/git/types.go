@@ -17,6 +17,7 @@ type CommitDiffDetails struct {
 type FileChange struct {
 	Path      string
 	Status    string // Added, Modified, Deleted
+	Content   string
 	Additions int
 	Deletions int
 }

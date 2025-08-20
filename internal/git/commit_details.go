@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
@@ -83,9 +84,39 @@ func (r *Repository) processFileChange(change *object.Change) FileChange {
 		Status:    status,
 		Additions: additionCount,
 		Deletions: deletionCount,
+		Content:   r.extractChangesOnly(patch),
 	}
 
 	return fileChange
+}
+
+// Extract the changes from a patch String
+func (r *Repository) extractChangesOnly(patch *object.Patch) string {
+	var additions, deletions, result strings.Builder
+
+	lines := strings.Split(patch.String(), "\n")
+
+	for _, line := range lines {
+		// Only extract actual changes, skip headers and context
+		if strings.HasPrefix(line, "+") && !strings.HasPrefix(line, "+++") {
+			additions.WriteString(line + "\n")
+		}
+		if strings.HasPrefix(line, "-") && !strings.HasPrefix(line, "---") {
+			deletions.WriteString(line + "\n")
+		}
+	}
+
+	if deletions.Len() > 0 {
+		result.WriteString("DELETIONS:\n")
+		result.WriteString(deletions.String())
+		result.WriteString("\n")
+	}
+	if additions.Len() > 0 {
+		result.WriteString("ADDITIONS:\n")
+		result.WriteString(additions.String())
+	}
+
+	return strings.TrimSpace(result.String())
 }
 
 // Get the parent commit
