@@ -5,8 +5,14 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/frfahim/gitstory/internal/types"
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
+
+type CommitDiffDetails struct {
+	Files []types.FileChange
+	Stats types.CommitStats
+}
 
 func (r *Repository) GetCommitDiffDetails(commit *object.Commit, includeDiff bool) (CommitDiffDetails, error) {
 	commitDiff, stats, err := r.extractFileChanges(commit, includeDiff)
@@ -17,9 +23,9 @@ func (r *Repository) GetCommitDiffDetails(commit *object.Commit, includeDiff boo
 
 }
 
-func (r *Repository) extractFileChanges(commit *object.Commit, includeDiff bool) ([]FileChange, CommitStats, error) {
-	var files []FileChange
-	var stats CommitStats
+func (r *Repository) extractFileChanges(commit *object.Commit, includeDiff bool) ([]types.FileChange, types.CommitStats, error) {
+	var files []types.FileChange
+	var stats types.CommitStats
 	languageCount := make(map[string]int)
 
 	// Get the current commit tree object
@@ -71,7 +77,7 @@ func (r *Repository) extractFileChanges(commit *object.Commit, includeDiff bool)
 }
 
 // Process a single file change
-func (r *Repository) processFileChange(change *object.Change) FileChange {
+func (r *Repository) processFileChange(change *object.Change) types.FileChange {
 	var path, status string
 	var additionCount, deletionCount int = 0, 0
 
@@ -84,7 +90,7 @@ func (r *Repository) processFileChange(change *object.Change) FileChange {
 	}
 	patch, err := change.Patch()
 	if err != nil {
-		return FileChange{
+		return types.FileChange{
 			Path:   path,
 			Status: status,
 		}
@@ -95,7 +101,7 @@ func (r *Repository) processFileChange(change *object.Change) FileChange {
 		deletionCount += fs.Deletion
 	}
 
-	fileChange := FileChange{
+	fileChange := types.FileChange{
 		Path:      path,
 		Status:    status,
 		Additions: additionCount,

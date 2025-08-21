@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/frfahim/gitstory/internal/types"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -34,11 +35,11 @@ func (r *Repository) ListCommits(n int) ([]*object.Commit, error) {
 	return commits, err
 }
 
-// ListCommitSummaries returns summary info for last N commits
-func (repo *Repository) ListCommitSummaries(commits []*object.Commit) ([]CommitSummary, error) {
-	var summaries []CommitSummary
+// ListCommitSummarize returns summary info for last N commits
+func (repo *Repository) ListCommitSummarize(commits []*object.Commit) ([]types.CommitData, error) {
+	var summarize []types.CommitData
 	for _, commit := range commits {
-		commitSummary := CommitSummary{
+		commitSummary := types.CommitData{
 			Hash:    commit.Hash.String()[:7],
 			Author:  commit.Author.Name,
 			Date:    commit.Author.When.Format(time.RFC3339),
@@ -47,9 +48,9 @@ func (repo *Repository) ListCommitSummaries(commits []*object.Commit) ([]CommitS
 		details, _ := repo.GetCommitDiffDetails(commit, true)
 		commitSummary.Files = details.Files
 		commitSummary.Stats = details.Stats
-		summaries = append(summaries, commitSummary)
+		summarize = append(summarize, commitSummary)
 	}
-	return summaries, nil
+	return summarize, nil
 }
 
 // ListUniqueCommits returns commits unique to the current branch (not in baseBranch)

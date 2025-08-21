@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"strings"
+
+	"github.com/frfahim/gitstory/internal/types"
 )
 
 // Provider represents different AI providers
@@ -15,7 +17,7 @@ const (
 	Gemini Provider = "gemini"
 )
 
-// Platform represents target platforms for summaries
+// Platform represents target platforms for summarize
 type Platform string
 
 const (
@@ -63,18 +65,10 @@ type ClientConfig struct {
 	Model    string   `json:"model,omitempty"`
 }
 
-// CommitData represents basic commit information for AI
-type CommitData struct {
-	Hash    string `json:"hash"`
-	Message string `json:"message"`
-	Author  string `json:"author"`
-	Date    string `json:"date"`
-}
-
 // SummaryRequest contains all information needed for AI summarization
 type SummaryRequest struct {
 	// Core commit data
-	Commits []CommitData `json:"commits"`
+	Commits []types.CommitData `json:"commits"`
 
 	// Summary configuration
 	Platform  Platform `json:"platform"`

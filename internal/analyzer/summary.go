@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/frfahim/gitstory/internal/git"
+	"github.com/frfahim/gitstory/internal/types"
 )
 
 // SummarizeCommits creates a naive summary from commit messages
-func SummarizeCommits(commits []git.CommitSummary) string {
+func SummarizeCommits(commits []types.CommitData) string {
 	if len(commits) == 0 {
 		return "No commits to summarize."
 	}
