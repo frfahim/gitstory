@@ -2,7 +2,7 @@
 
 **Transform your Git commits into compelling stories with AI.**
 
-GitStory is a powerful CLI tool that analyzes your Git history and uses AI to generate intelligent summaries optimized for different platforms - from technical documentation to social media posts.
+GitStory is a powerful CLI tool that analyzes your Git history and uses AI to generate intelligent summarize optimized for different platforms - from technical documentation to social media posts.
 
 ## 🎯 Why GitStory?
 
@@ -13,7 +13,7 @@ As developers, we often struggle to:
 - **Document changes** for technical teams
 - **Write blog posts** about interesting projects
 
-GitStory solves this by analyzing your Git commits and generating platform-specific summaries using AI.
+GitStory solves this by analyzing your Git commits and generating platform-specific summarize using AI.
 
 ## ✨ Features
 
@@ -24,10 +24,10 @@ GitStory solves this by analyzing your Git commits and generating platform-speci
 
 ### 📱 Platform-Optimized Output
 - **Twitter**: Engaging posts under 280 characters with hashtags
-- **LinkedIn**: Professional summaries highlighting business impact
+- **LinkedIn**: Professional summarize highlighting business impact
 - **Blog**: Detailed technical narratives for your blog
 - **Technical Docs**: Comprehensive documentation for teams
-- **Personal Notes**: Organized summaries for your reference
+- **Personal Notes**: Organized summarize for your reference
 
 ### 🔧 Git Integration
 - **Repository Analysis**: Extract commit history and metadata
@@ -132,7 +132,7 @@ Implemented comprehensive authentication system with OAuth integration and secur
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `summarize` | Generate AI summaries | `gitstory summarize --platform blog` |
+| `summarize` | Generate AI summarize | `gitstory summarize --platform blog` |
 | `list` | Show repository info and commits | `gitstory list --commits 10` |
 | `status` | Display repository status | `gitstory status` |
 
@@ -151,7 +151,7 @@ Implemented comprehensive authentication system with OAuth integration and secur
 --unique --base main     # Only commits unique to current branch
 
 # Content options
---context "description"  # Add context for better summaries
+--context "description"  # Add context for better summarize
 --include-diff          # Include code changes in analysis
 
 # Output options
@@ -210,7 +210,7 @@ export GEMINI_MODEL="gemini-2.5-pro"
 - [ ] **Claude AI Integration**: Anthropic's Claude and more
 - [ ] **Interactive TUI**: Beautiful terminal interface with Bubble Tea
 - [ ] **Export System**: Direct export to Hugo, Jekyll, Obsidian
-- [ ] **Diff Analysis**: Include actual code changes in summaries
+- [ ] **Diff Analysis**: Include actual code changes in summarize
 - [ ] **Configuration Management**: Persistent settings and API key management
 - [ ] **Template System**: Custom prompt templates for different use cases
 

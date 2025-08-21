@@ -54,14 +54,14 @@ var analyzeCmd = &cobra.Command{
 			fmt.Printf("🔎 Showing last %d commits on branch '%s':\n\n", len(commits), repo.CurrentBranchName())
 		}
 
-		summaries, err := repo.ListCommitSummaries(commits)
+		summarize, err := repo.ListCommitSummarize(commits)
 		if err != nil {
-			fmt.Printf("❌ Error listing commit summaries: %v\n", err)
+			fmt.Printf("❌ Error listing commit summarizes: %v\n", err)
 			return
 		}
 
-		fmt.Printf("Commit summaries (showing last %d):\n\n", len(summaries))
-		summary_analyzer := analyzer.SummarizeCommits(summaries)
+		fmt.Printf("Commit summarizes (showing last %d):\n\n", len(summarize))
+		summary_analyzer := analyzer.SummarizeCommits(summarize)
 		fmt.Println(summary_analyzer)
 	},
 }
