@@ -17,8 +17,8 @@ import (
 
 var summarizeCmd = &cobra.Command{
 	Use:   "summarize",
-	Short: "Generate AI-powered summaries of your commits details",
-	Long: `Generate intelligent summaries of your git commits details using AI providers like OpenAI and Gemini.
+	Short: "Generate AI-powered summarize of your commits details",
+	Long: `Generate intelligent summarize of your git commits details using AI providers like OpenAI and Gemini.
 Supports different platforms (twitter/X, blog, linkedin, technical, notes) with optimized prompts.
 
 Examples:
@@ -91,24 +91,13 @@ func runSummarize(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	// Convert to commit summaries then to LLM format
-	summariesCommitList, err := repo.ListCommitSummaries(commits)
+	// Convert to commit summarize then to LLM format
+	summarizeCommitList, err := repo.ListCommitSummarize(commits)
 	if err != nil {
-		return fmt.Errorf("failed to get commit summaries: %w", err)
+		return fmt.Errorf("failed to get commit summarizes: %w", err)
 	}
 
-	fmt.Printf("📝 Found %d commit(s) to summarize\n", len(summariesCommitList))
-
-	// Convert to LLM format
-	llmCommits := make([]llm.CommitData, len(summariesCommitList))
-	for i, commit := range summariesCommitList {
-		llmCommits[i] = llm.CommitData{
-			Hash:    commit.Hash,
-			Message: commit.Message,
-			Author:  commit.Author,
-			Date:    commit.Date,
-		}
-	}
+	fmt.Printf("📝 Found %d commit(s) to summarize\n", len(summarizeCommitList))
 
 	// Smart provider selection
 	if provider == "" {
@@ -150,7 +139,7 @@ func runSummarize(cmd *cobra.Command, args []string) error {
 
 	// Create summary request
 	request := &llm.SummaryRequest{
-		Commits:     llmCommits,
+		Commits:     summarizeCommitList,
 		Platform:    normalizedPlatform,
 		UserContext: userContext,
 	}

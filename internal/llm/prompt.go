@@ -39,7 +39,7 @@ func getSystemPrompt(platform Platform) string {
 		Note: `You are a thoughtful developer creating personal development notes. You excel at:
 - Organizing information for easy future reference
 - Highlighting key learning points and decisions made
-- Creating concise but complete summaries
+- Creating concise but complete summarize
 - Noting important context and follow-up actions
 - Structuring information for personal productivity and growth tracking`,
 	}
@@ -183,29 +183,74 @@ func buildPrompt(request *SummaryRequest) string {
 	}
 
 	// Add commit summary stats
-	prompt.WriteString(fmt.Sprintf("Analyzing %d git commit(s):\n\n", len(request.Commits)))
+	prompt.WriteString(fmt.Sprintf("Analyzing %d git commit(s) with code changes:\n\n", len(request.Commits)))
 
-	// Add each commit with better formatting
+	// Add each commit with enhanced formatting
 	for i, commit := range request.Commits {
 		prompt.WriteString(fmt.Sprintf("=== Commit %d ===\n", i+1))
-		prompt.WriteString(fmt.Sprintf("• Hash: %s\n", commit.Hash))
+		// prompt.WriteString(fmt.Sprintf("• Hash: %s\n", commit.Hash))
 		prompt.WriteString(fmt.Sprintf("• Author: %s\n", commit.Author))
 		prompt.WriteString(fmt.Sprintf("• Date: %s\n", commit.Date))
 		prompt.WriteString(fmt.Sprintf("• Message: %s\n", commit.Message))
 
-		// TODO: add file changes
-		// if len(commit.Files) > 0 {
-		// 	prompt.WriteString("• Files changed:\n")
-		// 	for _, file := range commit.Files {
-		// 		prompt.WriteString(fmt.Sprintf("  - %s (%s)\n", file.Path, file.Status))
-		// 	}
-		// }
+		// Add file statistics (always available from ListCommitSummarize)
+		if commit.Stats.TotalFiles > 0 {
+			prompt.WriteString(fmt.Sprintf("• Files changed: %d\n", commit.Stats.TotalFiles))
+			prompt.WriteString(fmt.Sprintf("• Lines: +%d -%d\n", commit.Stats.Additions, commit.Stats.Deletions))
+
+			if commit.Stats.PrimaryLang != "" {
+				prompt.WriteString(fmt.Sprintf("• Primary language: %s\n", commit.Stats.PrimaryLang))
+			}
+
+			if len(commit.Stats.Languages) > 1 {
+				prompt.WriteString(fmt.Sprintf("• Languages: %s\n", strings.Join(commit.Stats.Languages, ", ")))
+			}
+		}
+
+		// Add file changes (always available from ListCommitSummarize)
+		if len(commit.Files) > 0 {
+			prompt.WriteString("• File changes:\n")
+			for _, file := range commit.Files {
+				prompt.WriteString(fmt.Sprintf("  - %s (%s)", file.Path, file.Status))
+				if file.Additions > 0 || file.Deletions > 0 {
+					prompt.WriteString(fmt.Sprintf(" [+%d -%d]", file.Additions, file.Deletions))
+				}
+				prompt.WriteString("\n")
+
+				// Include code changes if available
+				if file.Content != "" {
+					prompt.WriteString("    Code changes:\n")
+					// Limit the content for prompt efficiency
+					contentLines := strings.Split(file.Content, "\n")
+					maxLines := 15 // Reasonable limit for prompts
+					if len(contentLines) > maxLines {
+						contentLines = contentLines[:maxLines]
+						contentLines = append(contentLines, "... (truncated)")
+					}
+
+					for _, line := range contentLines {
+						if line != "" {
+							prompt.WriteString(fmt.Sprintf("    %s\n", line))
+						}
+					}
+					prompt.WriteString("\n")
+				}
+			}
+		}
 		prompt.WriteString("\n")
 	}
 
 	// Add platform-specific instructions
 	prompt.WriteString("Please create a summary following these guidelines:")
 	prompt.WriteString(getPlatformInstructions(request.Platform))
+
+	// Add code-specific instructions (always relevant since we always have code changes)
+	prompt.WriteString("\n\nCode Analysis Instructions:")
+	prompt.WriteString("\n- Focus on the actual code changes and their impact")
+	prompt.WriteString("\n- Identify new features, bug fixes, refactoring, or optimizations")
+	prompt.WriteString("\n- Mention specific functions, classes, or modules when relevant")
+	prompt.WriteString("\n- Highlight technical improvements or architectural changes")
+	prompt.WriteString("\n- Consider the programming languages and technologies involved")
 
 	return prompt.String()
 }
